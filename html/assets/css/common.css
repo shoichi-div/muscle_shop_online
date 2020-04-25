@@ -1,0 +1,14 @@
+header h1 {
+    color: #000;
+    font-size: 20px;
+    font-weight: normal;
+    margin: 0;
+    }
+
+nav{
+    border-bottom: solid 2px #ee7800;
+}
+
+/* header{
+    background-image: url(./assets/images/login.);
+} */
