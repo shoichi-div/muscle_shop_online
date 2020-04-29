@@ -9,6 +9,47 @@ nav{
     border-bottom: solid 2px #ee7800;
 }
 
-/* header{
-    background-image: url(./assets/images/login.);
-} */
+img {
+            object-fit: contain;
+        }
+li {
+            list-style: none;
+        }
+
+th,
+td {
+    border: 1px solid #000;
+}
+
+header a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline #000;
+}
+
+header ul {
+    padding: 0;
+    float: right;
+    overflow: hidden;
+    display: flex;
+}
+
+#cart:hover {
+    background-color: #74d9e8;
+}
+
+.welcome {
+    font-size: 26px;
+}
+
+.logo {
+    margin-right: 50px;
+}
+
+header-right {
+    display: inline-block;
+    height: 30px;
+            line-height: 30px;
+        }

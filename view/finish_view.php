@@ -72,18 +72,6 @@
 <body>
     <?php include_once VIEW_PATH . 'templates/header_logined.php'; ?>
     <main>
-        <!--エラーがあれば表示-->
-        <?php if (count($err_msg) > 0) { ?>
-            <ul>
-                <?php foreach ($err_msg as $value) { ?>
-                    <li><?php print $value; ?></li>
-                <?php } ?>
-            <?php } else { ?>
-                <li><?php print $result_msg; ?></li>
-            <?php } ?>
-            </ul>
-
-            <?php if (count($err_msg) === 0) { ?>
 
                 <h2>
                     ご購入ありがとうございます！<br>
@@ -91,7 +79,7 @@
                 </h2>
 
                 <?php $total = 0; ?>
-                <?php foreach ($data as $dt) { ?>
+                <?php foreach ($carts as $dt) { ?>
                     <?php $subtotal =  $dt['price'] * $dt['amount']; ?>
                     <section class="itemlist">
                         <img src="<?php print htmlspecialchars($img_dir . $dt['img']); ?>">
@@ -109,7 +97,6 @@
                 <p>
                     合計金額：<?php print htmlspecialchars($total); ?>円
                 </p>
-            <?php } ?>
             <a href="index.php">商品一覧に戻る</a>
 
     </main>

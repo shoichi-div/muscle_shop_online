@@ -28,7 +28,7 @@ header('X-FRAME-OPTIONS: DENY');
             </thead>
             <tbody>
                 <?php foreach (array_reverse($purchase_data) as $data) { ?>
-                    <tr class="<?php print htmlspecialchars(is_open($item) ? '' : 'close_item'); ?>">
+                    <tr>
                         <td><?php print htmlspecialchars($data['buy_id']); ?></td>
 
                         <td><?php print htmlspecialchars($data['update']); ?></td>

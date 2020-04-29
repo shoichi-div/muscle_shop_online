@@ -19,23 +19,20 @@
 <body class="">
     <?php include_once VIEW_PATH . 'templates/header.php'; ?>
     <main class="w-50 bg-light mt-5 mx-auto">
-        <?php if (count($err_msg) > 0) { ?>
-            <ul>
-                <?php foreach ($err_msg as $value) { ?>
-                    <li><?php print $value; ?></li>
-                <?php } ?>
-            </ul>
-        <?php } ?>
+        <?php include_once VIEW_PATH . 'templates/messages.php'; ?>
+
         <h1 class="p-3">ログイン</h1>
 
         <div class="text-center ml-4 p-3 d-flex">
-            <form method="post" action="./login_session.php">
-                <div>ユーザー名:<input type="text" name="user_name"></div>
-                <div>パスワード:<input type="password" name="password"></div>
+            <form method="post" action="login_process.php">
+                <div><label for="name">ユーザー名:</label><input type="text" id="name" name="user_name"></div>
+                <div><label for="password">パスワード:</label><input type="password" id="password" name="password"></div>
                 <input type="submit" name="login" value="ログイン" class="btn btn-warning mt-2">
+                <input type="hidden" name="token" value="<?php print htmlspecialchars($token); ?>">
             </form>
             <form action="register.php">
-                <input type="submit" name="register" value="新規会員登録" class="btn btn-warning m-2">
+                <input type="submit" name="register" value="新規会員登録" class="btn btn-warning m-5">
+                <input type="hidden" name="token" value="<?php print htmlspecialchars($token); ?>">
             </form>
         </div>
 

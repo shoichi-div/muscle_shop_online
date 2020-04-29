@@ -106,7 +106,7 @@ function add_history($dbh, $user_id)
 function add_detail($dbh, $rows)
 {
     //buy_idを取得
-    $id = $dbh>lastInsertId();
+    $id = $dbh->lastInsertId();
     //購入明細の更新
     foreach ($rows as $row) {
         $sql = 'INSERT INTO purchase_detail (buy_id, item_id, amount, price)

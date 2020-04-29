@@ -15,7 +15,9 @@
                 <li>
                     <a class="nav-link" href="<?php print(HISTORY_URL); ?>">購入履歴</a>
                 </li>
-                <?php if ($user_name === 'admin') { ?>
+                <?php
+                $user = get_login_user($dbh);
+                if (is_admin($user) === true ) { ?>
                     <li class="nav-item">
                         <a class="nav-link" href="<?php print(ADMIN_URL); ?>">管理画面</a>
                     </li>
@@ -26,5 +28,5 @@
             </ul>
         </div>
     </nav>
-    <p>ようこそ、<?php print($user_name); ?>さん。</p>
+    <p>ようこそ、<?php print($user['user_name']); ?>さん。</p>
 </header>

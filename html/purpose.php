@@ -1,38 +1,15 @@
 <?php
-//設定ファイル読み込み
 require_once '../conf/const.php';
-//関数ファイル読み込み
 require_once '../model/common.php';
 
-$err_msg = array();
-$result_msg = '';
-$process_kind = '';
-$mi_data = array();
-$data = array();
-$mi_check = 1;
-$category = '';
-$part = '';
-$word = '';
+//DB接続
+$dbh = get_db_connect();
 
-try{
-    //DB接続
-    $dbh = get_db_connect();
+session_start();
 
-    session_start();
-    if(isset($_SESSION['user_id'])){
-        //ユーザー名取得
-        $user_name = user_name($dbh);
-    
-       
-    }else{
-        header('Location: login.php');
-        exit;
-    }
-    
-    
-}catch (Exception $e) {
-    $err_msg[] = $e ->getMessage();
+if (is_logined() === false) {
+    redirect_to(LOGIN_URL);
 }
 
 //viewファイル読み込み
-include_once '../view/purpose_view.php';
+include_once VIEW_PATH . 'purpose_view.php';
