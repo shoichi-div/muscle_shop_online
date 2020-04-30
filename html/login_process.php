@@ -10,7 +10,8 @@ if (is_logined() === true) {
 }
 
 $token = get_post_data('token');
-if (is_valid_csrf_token($token) === FALSE) {
+if (is_valid_csrf_token($token) === false) {
+    set_error('不正なアクセスです');
     redirect_to(LOGIN_URL);
 } else {
     $token = get_csrf_token();

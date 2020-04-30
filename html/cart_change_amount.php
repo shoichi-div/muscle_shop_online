@@ -14,6 +14,7 @@ if (is_logined() === false) {
 $token = get_post_data('token');
 
 if (is_valid_csrf_token($token) === FALSE) {
+    set_error('不正なアクセスです');
     redirect_to(LOGOUT_URL);
 } else {
     $token = get_csrf_token();

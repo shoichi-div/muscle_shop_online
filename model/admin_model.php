@@ -130,182 +130,104 @@ function update_item_stock($dbh, $stock_id, $stock)
 }
 
 
-//在庫数変更
-function stock_number_change($dbh, $stock, $id)
-{
-    global $err_msg;
-    $result_msg = '';
-    $pattern = '/^([+]?[0-9]*)$/';
-    //現在時刻を取得
-    $now_date = date('Y-m-d H:i:s');
-
-    if (preg_match($pattern, $stock) === 0) {
-        $err_msg[] = '在庫数には0以上の整数を入力してください';
-    }
-
-    if (count($err_msg) === 0) {
-
-
-        //在庫数変更
-        $sql = 'UPDATE ec_stock_master SET 
-            stock = ?, update_datetime = ?
-            WHERE stock_id = ? ;';
-
-
-        // SQL文を実行する準備
-        $stmt = $dbh->prepare($sql);
-        $stmt->bindValue(1, $stock, PDO::PARAM_INT);
-        $stmt->bindValue(2, $now_date, PDO::PARAM_STR);
-        $stmt->bindValue(3, $id, PDO::PARAM_INT);
-        $stmt->execute();
-
-        $result_msg = '在庫数を変更しました';
-    }
-
-    return $result_msg;
-}
-
 //公開ステータス変更
-function status_change($dbh, $status, $id)
+function update_status($dbh, $status, $id)
 {
-    global $err_msg;
-    $result_msg = '';
     //現在時刻を取得
     $now_date = date('Y-m-d H:i:s');
+
     if ($status !== '1' && $status !== '0') {
-        $err_msg[] = '公開ステータス(status)の値は0か1を入力してください';
+        return 'else';
+    } else {
+        $sql =
+            'UPDATE
+                ec_item_master
+            SET 
+                status = ?,
+                update_datetime = ?
+            WHERE
+                item_id = ? ;';
+        return execute_query($dbh, $sql, array($status, $now_date, $id));
     }
-
-    if (count($err_msg) === 0) {
-        //ステータス変更
-        $sql = 'UPDATE ec_item_master SET 
-                status = ?, update_datetime = ?
-                WHERE item_id = ? ;';
-
-
-        // SQL文を実行する準備
-        $stmt = $dbh->prepare($sql);
-        $stmt->bindValue(1, $status, PDO::PARAM_INT);
-        $stmt->bindValue(2, $now_date, PDO::PARAM_STR);
-        $stmt->bindValue(3, $id, PDO::PARAM_INT);
-        $stmt->execute();
-
-        $result_msg = '公開ステータスを変更しました';
-    }
-
-
-
-
-    return $result_msg;
 }
 
 //商品削除
-function delete($dbh, $id)
+function delete_item($dbh, $id)
 {
-    global $err_msg;
-    $result_msg = "";
+    $dbh->beginTransaction();
+    try {
+        $sql =
+            'DELETE FROM
+                ec_item_master 
+            WHERE
+                item_id = ? ;';
+        execute_query($dbh, $sql, array($id));
 
-    $sql = 'DELETE FROM ec_item_master 
-            WHERE item_id = ? ;';
+        $sql = 'DELETE FROM ec_stock_master 
+                WHERE stock_id = ? ;';
+        execute_query($dbh, $sql, array($id));
 
-
-    // SQL文を実行する準備
-    $stmt = $dbh->prepare($sql);
-    $stmt->bindValue(1, $id, PDO::PARAM_INT);
-    $stmt->execute();
-
-    $sql = 'DELETE FROM ec_stock_master 
-            WHERE stock_id = ? ;';
-
-
-    // SQL文を実行する準備
-    $stmt = $dbh->prepare($sql);
-    $stmt->bindValue(1, $id, PDO::PARAM_INT);
-    $stmt->execute();
-
-    $result_msg = '商品を削除しました';
-
-    return $result_msg;
+        //コミット
+        $dbh->commit();
+        return true;
+    } catch (PDOException $e) {
+        //ロールバック
+        $dbh->rollBack();
+        set_error($e);
+        return false;
+    }
 }
 
 //カテゴリ変更
-function category_change($dbh, $category, $id)
+function update_category($dbh, $category, $id)
 {
-    global $err_msg;
-    $result_msg = '';
     //現在時刻を取得
     $now_date = date('Y-m-d H:i:s');
 
-
     //カテゴリー変更
-    $sql = 'UPDATE ec_item_master SET 
-            category = ?, update_datetime = ?
-            WHERE item_id = ? ;';
-
-
-    // SQL文を実行する準備
-    $stmt = $dbh->prepare($sql);
-    $stmt->bindValue(1, $category, PDO::PARAM_STR);
-    $stmt->bindValue(2, $now_date, PDO::PARAM_STR);
-    $stmt->bindValue(3, $id, PDO::PARAM_INT);
-    $stmt->execute();
-
-    $result_msg = 'カテゴリーを変更しました';
-
-    return $result_msg;
+    $sql =
+        'UPDATE
+            ec_item_master
+        SET 
+            category = ?,
+            update_datetime = ?
+            
+        WHERE
+            item_id = ? ;';
+    return execute_query($dbh, $sql, array($category, $now_date, $id));
 }
 
 //部位変更
-function part_change($dbh, $part, $id)
+function update_part($dbh, $part, $id)
 {
-    global $err_msg;
-    $result_msg = '';
     //現在時刻を取得
     $now_date = date('Y-m-d H:i:s');
 
-
-    //部位変更
-    $sql = 'UPDATE ec_item_master SET 
-            part = ?, update_datetime = ?
-            WHERE item_id = ? ;';
-
-
-    // SQL文を実行する準備
-    $stmt = $dbh->prepare($sql);
-    $stmt->bindValue(1, $part, PDO::PARAM_STR);
-    $stmt->bindValue(2, $now_date, PDO::PARAM_STR);
-    $stmt->bindValue(3, $id, PDO::PARAM_INT);
-    $stmt->execute();
-
-    $result_msg = '部位を変更しました';
-
-    return $result_msg;
+    $sql =
+        'UPDATE
+            ec_item_master
+        SET 
+            part = ?,
+            update_datetime = ?
+        WHERE
+        item_id = ? ;';
+    return execute_query($dbh, $sql, array($part, $now_date, $id));
 }
 
 //メニュー変更
-function menu_change($dbh, $menu, $id)
+function update_menu($dbh, $menu, $id)
 {
-    global $err_msg;
-    $result_msg = '';
     //現在時刻を取得
     $now_date = date('Y-m-d H:i:s');
-    print $menu;
-
 
     //メニュー変更
-    $sql = 'UPDATE ec_item_master SET 
-            menu = ?, update_datetime = ?
-            WHERE item_id = ? ;';
-
-
-    // SQL文を実行する準備
-    $stmt = $dbh->prepare($sql);
-    $stmt->bindValue(1, $menu, PDO::PARAM_STR);
-    $stmt->bindValue(2, $now_date, PDO::PARAM_STR);
-    $stmt->bindValue(3, $id, PDO::PARAM_INT);
-    $stmt->execute();
-
-    $result_msg = 'メニューを変更しました';
-
-    return $result_msg;
+    $sql =
+        'UPDATE
+            ec_item_master
+        SET 
+            menu = ?,
+            update_datetime = ?
+        WHERE
+            item_id = ? ;';
+    return execute_query($dbh, $sql, array($menu, $now_date, $id));
 }

@@ -24,6 +24,7 @@ $dbh = get_db_connect();
 $user = get_login_user($dbh);
 
 $carts = get_user_carts($dbh, $user['user_id']);
+$total_price = sum_carts($carts);
 
 if (purchase_carts($dbh, $carts) === false) {
     set_error('商品が購入できませんでした。');
@@ -36,11 +37,9 @@ try {
     //購入履歴・購入明細テーブルの更新
     add_history($dbh, $user['user_id']);
     add_detail($dbh, $carts);
+    update_mi($dbh, $user['mi'], $user['user_id'], $total_price);
 
     delete_user_carts($dbh, $user['user_id']);
-
-
-    $total_price = sum_carts($carts);
 
     //コミット
     $dbh->commit();

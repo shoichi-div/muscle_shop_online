@@ -21,6 +21,7 @@ define('HISTORY_URL', './history.php');
 define('LOGIN_URL', './login.php');
 define('LOGOUT_URL', './logout.php');
 define('CART_URL', './cart.php');
+define('USER_URL', './user.php');
 
 define('REGEXP_ALPHANUMERIC', '/\A[0-9a-zA-Z]+\z/');
 define('REGEXP_POSITIVE_INTEGER', '/\A([1-9][0-9]*|0)\z/');
@@ -52,4 +53,3 @@ define('PERMITTED_IMAGE_TYPES', array(
 
 
 $img_dir = './assets/images/';
-

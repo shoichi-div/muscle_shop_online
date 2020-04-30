@@ -1,3 +1,15 @@
+body{
+    min-height: 100vh;
+    position: relative;
+    padding-bottom: 60px;
+}
+
+footer{
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+}
+
 header h1 {
     color: #000;
     font-size: 20px;
@@ -10,46 +22,14 @@ nav{
 }
 
 img {
-            object-fit: contain;
-        }
-li {
-            list-style: none;
-        }
-
-th,
-td {
-    border: 1px solid #000;
+    object-fit: contain;
+    border-radius: 10px;
 }
 
-header a {
-    text-decoration: none;
+li {
+    list-style: none;
 }
 
 a:hover {
-    text-decoration: underline #000;
+    text-decoration: underline #000 ;
 }
-
-header ul {
-    padding: 0;
-    float: right;
-    overflow: hidden;
-    display: flex;
-}
-
-#cart:hover {
-    background-color: #74d9e8;
-}
-
-.welcome {
-    font-size: 26px;
-}
-
-.logo {
-    margin-right: 50px;
-}
-
-header-right {
-    display: inline-block;
-    height: 30px;
-            line-height: 30px;
-        }

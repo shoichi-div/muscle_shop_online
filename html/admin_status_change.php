@@ -26,13 +26,16 @@ if (is_admin($user) === false) {
     redirect_to(LOGIN_URL);
 }
 
-$stock_id = get_post_data('stock_id');
-$stock = get_post_data('stock');
+$status = get_post_data('status');
+$id = get_post_data('id');
 
-if (update_item_stock($dbh, $stock_id, $stock) === true) {
-    set_message('在庫数を更新しました。');
+if (update_status($dbh, $status, $id) === true) {
+    set_message('ステータスを更新しました。');
+} else if (update_status($dbh, $status, $id) === 'else') {
+    set_error('ステータスの更新に失敗しました。');
+    set_error('公開ステータス(status)の値は0か1を入力してください');
 } else {
-    set_error('在庫数の更新に失敗しました。');
+    set_error('ステータスの更新に失敗しました。');
 }
 
 $items = get_all_items($dbh);

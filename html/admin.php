@@ -22,5 +22,6 @@ if (is_admin($user) === false) {
 $token = get_csrf_token();
 
 $items = get_all_items($dbh);
+// var_dump($items);
 
 include_once VIEW_PATH . '/admin_view.php';

@@ -26,13 +26,13 @@ if (is_admin($user) === false) {
     redirect_to(LOGIN_URL);
 }
 
-$stock_id = get_post_data('stock_id');
-$stock = get_post_data('stock');
+$category = get_post_data('category');
+$id = get_post_data('id');
 
-if (update_item_stock($dbh, $stock_id, $stock) === true) {
-    set_message('在庫数を更新しました。');
+if (update_category($dbh, $category, $id) === true) {
+    set_message('カテゴリーを更新しました。');
 } else {
-    set_error('在庫数の更新に失敗しました。');
+    set_error('カテゴリーの更新に失敗しました。');
 }
 
 $items = get_all_items($dbh);

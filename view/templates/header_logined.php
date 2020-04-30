@@ -10,6 +10,9 @@
         <div class="collapse navbar-collapse" id="headerNav">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
+                    <a class="nav-link" href="<?php print(HOME_URL); ?>">マーケット</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="<?php print(CART_URL); ?>">カート</a>
                 </li>
                 <li>
@@ -17,16 +20,20 @@
                 </li>
                 <?php
                 $user = get_login_user($dbh);
-                if (is_admin($user) === true ) { ?>
+                if (is_admin($user) === true) { ?>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?php print(ADMIN_URL); ?>">管理画面</a>
+                        <a class="nav-link" href="<?php print(ADMIN_URL); ?>">商品管理画面</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?php print(USER_URL); ?>">ユーザー管理画面</a>
+                    </li>
+
                 <?php } ?>
                 <li class="nav-item">
                     <a class="nav-link" href="<?php print(LOGOUT_URL); ?>">ログアウト</a>
                 </li>
             </ul>
         </div>
+        <p>ようこそ、<?php print($user['user_name']); ?>さん。</p>
     </nav>
-    <p>ようこそ、<?php print($user['user_name']); ?>さん。</p>
 </header>

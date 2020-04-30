@@ -7,19 +7,41 @@ function get_user($dbh, $user_id)
     SELECT
       user_id, 
       user_name,
-      password
+      password,
+      mi,
+      mi_status
     FROM
       ec_user
     WHERE
       user_id = ?
   ";
-
   try {
     return fetch_query($dbh, $sql, array($user_id));
   } catch (PDOException $e) {
     set_error('データ取得に失敗しました。');
+    return false;
   }
-  return false;
+}
+
+function get_all_users($dbh)
+{
+  $sql = "
+    SELECT
+      user_id, 
+      user_name,
+      password,
+      mi,
+      mi_status,
+      create_datetime
+    FROM
+      ec_user
+  ";
+  try {
+    return fetch_all_query($dbh, $sql);
+  } catch (PDOException $e) {
+    set_error('データ取得に失敗しました。');
+    return false;
+  }
 }
 
 function get_user_by_name($dbh, $name)
@@ -39,8 +61,8 @@ function get_user_by_name($dbh, $name)
     return fetch_query($dbh, $sql, array($name));
   } catch (PDOException $e) {
     set_error('データ取得に失敗しました。');
+    return false;
   }
-  return false;
 }
 
 function login_as($dbh, $name, $password)
@@ -68,7 +90,6 @@ function regist_user($dbh, $name, $password, $password_confirmation, $name_data)
   if (is_unique_user($name, $name_data) === false) {
     return false;
   }
-
   return insert_user($dbh, $name, $password);
 }
 
@@ -117,30 +138,23 @@ function is_valid_password($password, $password_confirmation)
   return $is_valid;
 }
 
-function insert_user($dbh, $name, $password)
-{
-  $hash = password_hash($password, PASSWORD_DEFAULT);
-  $sql = "
-    INSERT INTO
-      ec_user(user_name, password)
-    VALUES (?, ?);
-  ";
-
-  try {
-    return execute_query($dbh, $sql, array($name, $hash));
-  } catch (PDOException $e) {
-    set_error('更新に失敗しました。');
-  }
-  return false;
-}
-
 // 既存のユーザーか確認
 function is_unique_user($name, $name_data)
 {
-  $is_unique = true;
   if ($name === $name_data['name']) {
     set_error('既に存在するユーザー名です。');
     $is_unique = false;
+  } else {
+    $is_unique = true;
   }
   return $is_unique;
+}
+
+function insert_user($dbh, $name, $password)
+{
+  $hash = password_hash($password, PASSWORD_DEFAULT);
+  $sql = "INSERT INTO
+            ec_user (`user_name`, `password`, create_datetime, update_datetime)
+          VALUES (?, ?, now(), now());";
+  return execute_query($dbh, $sql, array($name, $hash));
 }

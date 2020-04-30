@@ -1,69 +1,51 @@
 <?php
 require_once MODEL_PATH . 'cart_model.php';
 
-function mi_status_check()
-{
-    $str = get_post_data('mi_status');
-    return $str;
-}
-
-function mi_change($dbh, $mi_status, $user_name)
+function update_mi_status($dbh, $mi_status, $user_id)
 {
     //現在時刻を取得
     $now_date = date('Y-m-d H:i:s');
 
     if ($mi_status !== '1' && $mi_status !== '0') {
-        $err_msg[] = 'miステータスの値は0か1を入力してください';
+        return 'else';
     } else {
 
         //mi_status更新
         // SQL生成
-        $sql = "UPDATE ec_user SET mi_status = ?, update_datetime = ? WHERE user_name = ? ";
-        // SQL文を実行する準備
-        $stmt = $dbh->prepare($sql);
-        $stmt->bindValue(1, $mi_status, PDO::PARAM_STR);
-        $stmt->bindValue(2, $now_date, PDO::PARAM_STR);
-        $stmt->bindValue(3, $user_name, PDO::PARAM_STR);
-        $stmt->execute();
+        $sql =
+            "UPDATE
+                ec_user
+            SET
+                mi_status = ?,
+                update_datetime = ?
+            WHERE
+                user_id = ? ";
+        return execute_query($dbh, $sql, array($mi_status, $now_date, $user_id));
     }
 }
-
-function mi_check($dbh, $user_name)
-{
-    //値を取得
-    // SQL生成
-    $sql = 'SELECT * FROM ec_user WHERE user_name = ?';
-    $stmt = $dbh->prepare($sql);
-    $stmt->bindValue(1, $user_name, PDO::PARAM_STR);
-    $stmt->execute();
-    $rows = $stmt->fetchAll();
-
-    return $rows;
-}
-
 
 //受信値を変数に変換
 function serch_value()
 {
-    if ($_POST['category'] === 'ALL') {
+    if (get_get_data('category') === 'ALL') {
         $category = '%';
     } else {
-        $category　= "%" . get_post_data('category') . "%";
+        $category  = "%" . get_get_data('category') . "%";
     }
-    if ($_POST['part'] === 'ALL') {
+    if (get_get_data('part') === 'ALL') {
         $part = '%';
     } else {
-        $part = "%" . get_post_data('part') . "%";
+        $part = "%" . get_get_data('part') . "%";
     }
-    if ($_POST['keyword'] === 'ALL') {
+    if (get_get_data('keyword') === 'ALL') {
         $keyword = '%';
-    } else if ($_POST['keyword'] !== '') {
-        $keyword = "%" . get_post_data('keyword') . "%";
+    } else if (get_get_data('keyword') !== '') {
+        $keyword = "%" . get_get_data('keyword') . "%";
     } else {
         $keyword = '';
     }
 
-    $word = get_post_data('keyword');
+    $word = get_get_data('keyword');
     return array($category, $part, $keyword, $word);
 }
 
@@ -72,7 +54,16 @@ function get_item_data($dbh)
 {
 
     // SQL生成
-    $sql = 'SELECT * FROM ec_item_master INNER JOIN ec_stock_master ON ec_item_master.item_id = ec_stock_master.stock_id WHERE status = 1';
+    $sql = 'SELECT
+                *
+            FROM
+                ec_item_master
+            INNER JOIN
+                ec_stock_master
+            ON
+                ec_item_master.item_id = ec_stock_master.stock_id
+            WHERE
+                status = 1';
     // クエリ実行
     return fetch_all_query($dbh, $sql);
 }
@@ -135,4 +126,34 @@ function get_data_serched($dbh, $category, $part, $keyword)
 function is_open($item)
 {
     return $item['status'] === 1;
+}
+
+function sort_items($dbh, $str)
+{
+    $sql =  "SELECT
+                ec_item_master.name,
+                ec_item_master.img,
+                ec_item_master.price,
+                ec_item_master.item_id,
+                ec_stock_master.stock
+            FROM
+                ec_item_master
+            INNER JOIN
+                ec_stock_master
+            ON
+                ec_item_master.item_id = ec_stock_master.stock_id
+            ORDER BY
+                CASE ?
+                    WHEN '' THEN ec_item_master.create_datetime
+                END DESC,
+                CASE ?
+                    WHEN 'new' THEN ec_item_master.create_datetime
+                END DESC,
+                CASE ?
+                    WHEN 'high' THEN ec_item_master.price
+                END DESC,
+                CASE ?
+                    WHEN 'low' THEN ec_item_master.price
+                END ASC;";
+    return fetch_all_query($dbh, $sql, array($str, $str, $str, $str));
 }

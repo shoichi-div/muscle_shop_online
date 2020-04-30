@@ -1,33 +1,5 @@
 <?php
 
-/**
- * 特殊文字をHTMLエンティティに変換する
- * @param str $str 変換前文字
- * @return str 変換後文字
- */
-function entity_str($str)
-{
-  return htmlspecialchars($str, ENT_QUOTES, HTML_CHARACTER_SET);
-}
-
-/**
- * 特殊文字をHTMLエンティティに変換する（２次配列の値）
- * @param array $assoc_array 変換前配列
- * @return array 変換後配列
- */
-function entity_assoc_array($assoc_array)
-{
-
-  foreach ($assoc_array as $key => $value) {
-    foreach ($value as $keys => $values) {
-      //特殊文字をHTMLエンティティに変換
-      $assoc_array[$key][$keys] = entity_str($values);
-    }
-  }
-
-  return $assoc_array;
-}
-
 function get_db_connect()
 {
   // MySQL用のDSN文字列
@@ -108,6 +80,16 @@ function get_post_data($key)
   $str = '';
   if (isset($_POST[$key]) === TRUE) {
     $str = $_POST[$key];
+  }
+  return $str;
+}
+
+//GET値を変数化
+function get_get_data($key)
+{
+  $str = '';
+  if (isset($_GET[$key]) === TRUE) {
+    $str = $_GET[$key];
   }
   return $str;
 }
@@ -242,4 +224,21 @@ function is_valid_upload_image($image)
     return false;
   }
   return true;
+}
+
+// 再帰関数でセパレート
+function separate_number($num)
+{
+  // 文字列にする
+  $num = (string) $num;
+
+  $length = mb_strlen($num);
+
+  // 再帰的に呼び出すよ
+  if ($length > 3) {
+    // 前半を引数に再帰呼び出し + 後半3桁
+    return separate_number(substr($num, 0, $length - 3)) . ',' . substr($num, $length - 3);
+  } else {
+    return $num;
+  }
 }
