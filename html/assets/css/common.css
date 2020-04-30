@@ -1,3 +1,15 @@
+body{
+    min-height: 100vh;
+    position: relative;
+    padding-bottom: 60px;
+}
+
+footer{
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+}
+
 header h1 {
     color: #000;
     font-size: 20px;
@@ -9,6 +21,15 @@ nav{
     border-bottom: solid 2px #ee7800;
 }
 
-/* header{
-    background-image: url(./assets/images/login.);
-} */
+img {
+    object-fit: contain;
+    border-radius: 10px;
+}
+
+li {
+    list-style: none;
+}
+
+a:hover {
+    text-decoration: underline #000 ;
+}

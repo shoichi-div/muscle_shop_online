@@ -1,44 +1,5 @@
 <?php
 
-//受信値を変数に変換
-// function insert_value()
-// {
-//   $process_kind = get_post_data('process_kind');
-//   $id           = get_post_data('id');
-//   $amount       = get_post_data('amount');
-//   $total        = get_post_data('total');
-
-//   return array($process_kind, $id, $amount,$total);
-// }
-
-/**
- * 特殊文字をHTMLエンティティに変換する
- * @param str $str 変換前文字
- * @return str 変換後文字
- */
-function entity_str($str)
-{
-  return htmlspecialchars($str, ENT_QUOTES, HTML_CHARACTER_SET);
-}
-
-/**
- * 特殊文字をHTMLエンティティに変換する（２次配列の値）
- * @param array $assoc_array 変換前配列
- * @return array 変換後配列
- */
-function entity_assoc_array($assoc_array)
-{
-
-  foreach ($assoc_array as $key => $value) {
-    foreach ($value as $keys => $values) {
-      //特殊文字をHTMLエンティティに変換
-      $assoc_array[$key][$keys] = entity_str($values);
-    }
-  }
-
-  return $assoc_array;
-}
-
 function get_db_connect()
 {
   // MySQL用のDSN文字列
@@ -56,28 +17,30 @@ function get_db_connect()
   return $dbh;
 }
 
-/**
- * クエリを実行しその結果を配列で取得する
- *
- * @param obj  $dbh DBハンドル
- * @param str  $sql SQL文
- * @return array 結果配列データ
- */
-function get_as_array($dbh, $sql)
+
+function get_errors()
 {
-
-  try {
-    // SQL文を実行する準備
-    $stmt = $dbh->prepare($sql);
-    // SQLを実行
-    $stmt->execute();
-    // レコードの取得
-    $rows = $stmt->fetchAll();
-  } catch (PDOException $e) {
-    throw $e;
+  $errors = get_session('__errors');
+  if ($errors === '') {
+    return array();
   }
+  set_session('__errors',  array());
+  return $errors;
+}
 
-  return $rows;
+function set_message($message)
+{
+  $_SESSION['__messages'][] = $message;
+}
+
+function get_messages()
+{
+  $messages = get_session('__messages');
+  if ($messages === '') {
+    return array();
+  }
+  set_session('__messages',  array());
+  return $messages;
 }
 
 
@@ -121,29 +84,14 @@ function get_post_data($key)
   return $str;
 }
 
-//ユーザー名取得
-function user_name($dbh)
+//GET値を変数化
+function get_get_data($key)
 {
-  $user_name = '';
-
-  if ($_SESSION['user_id'] === 'admin') {
-    $user_name = 'admin';
-  } else {
-    // SQL生成
-    $sql = 'SELECT user_name FROM ec_user WHERE user_id = ?';
-    // SQL文を実行する準備
-    $stmt = $dbh->prepare($sql);
-    $stmt->bindValue(1, $_SESSION['user_id'], PDO::PARAM_INT);
-
-    // SQLを実行
-    $stmt->execute();
-    $rows = $stmt->fetchAll();
-
-    $user_name = $rows[0]['user_name'];
+  $str = '';
+  if (isset($_GET[$key]) === TRUE) {
+    $str = $_GET[$key];
   }
-
-
-  return $user_name;
+  return $str;
 }
 
 function is_logined()
@@ -157,6 +105,11 @@ function get_session($name)
     return $_SESSION[$name];
   };
   return '';
+}
+
+function set_session($name, $value)
+{
+  $_SESSION[$name] = $value;
 }
 
 function redirect_to($url)
@@ -203,4 +156,89 @@ function execute_query($dbh, $sql, $params = array())
     set_error('更新に失敗しました。');
   }
   return false;
+}
+
+// トークンの生成
+function get_csrf_token()
+{
+  // get_random_string()はユーザー定義関数。
+  $token = get_random_str(30);
+  // set_session()はユーザー定義関数。
+  set_session('csrf_token', $token);
+  return $token;
+}
+
+// トークンのチェック
+function is_valid_csrf_token($token)
+{
+  if ($token === '') {
+    return false;
+  }
+  // get_session()はユーザー定義関数
+  return $token === get_session('csrf_token');
+}
+
+//ランダムな文字列生成
+function get_random_str($length)
+{
+  return substr(str_shuffle('1234567890abcdefghijklmnopqrstuvwxyz'), 0, $length);
+}
+
+
+function has_error()
+{
+  return isset($_SESSION['__errors']) && count($_SESSION['__errors']) !== 0;
+}
+
+function is_valid_length($string, $minimum_length, $maximum_length = PHP_INT_MAX)
+{
+  $length = mb_strlen($string);
+  return ($minimum_length <= $length) && ($length <= $maximum_length);
+}
+
+function is_alphanumeric($string)
+{
+  return is_valid_format($string, REGEXP_ALPHANUMERIC);
+}
+
+function is_positive_integer($string)
+{
+  return is_valid_format($string, REGEXP_POSITIVE_INTEGER);
+}
+
+function is_valid_format($string, $format)
+{
+  return preg_match($format, $string) === 1;
+}
+
+
+function is_valid_upload_image($image)
+{
+  if (is_uploaded_file($image['tmp_name']) === false) {
+    set_error('ファイル形式が不正です。');
+    return false;
+  }
+  $mimetype = exif_imagetype($image['tmp_name']);
+  if (isset(PERMITTED_IMAGE_TYPES[$mimetype]) === false) {
+    set_error('ファイル形式は' . implode('、', PERMITTED_IMAGE_TYPES) . 'のみ利用可能です。');
+    return false;
+  }
+  return true;
+}
+
+// 再帰関数でセパレート
+function separate_number($num)
+{
+  // 文字列にする
+  $num = (string) $num;
+
+  $length = mb_strlen($num);
+
+  // 再帰的に呼び出すよ
+  if ($length > 3) {
+    // 前半を引数に再帰呼び出し + 後半3桁
+    return separate_number(substr($num, 0, $length - 3)) . ',' . substr($num, $length - 3);
+  } else {
+    return $num;
+  }
 }

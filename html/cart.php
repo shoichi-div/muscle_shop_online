@@ -9,49 +9,27 @@ require_once MODEL_PATH . '/user_model.php';
 $err_msg = array();
 $result_msg = '';
 
-try {
-    //DB接続
-    $dbh = get_db_connect();
-    $user_id = get_login_user($dbh);
 
-    session_start();
-    if (isset($_SESSION['user_id'])) {
-        //ユーザー名取得
-        $user_name = user_name($dbh);
+//DB接続
+$dbh = get_db_connect();
 
-        //POSTかどうか
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+session_start();
 
-            //受信値を変数に変換
-            $process_kind = get_post_data('process_kind');
-            $id = get_post_data('id');
-            $amount = get_post_data('amount');
-
-            //ログアウト
-            if ($process_kind === 'logout') {
-                logout();
-            }
-
-            //個数変更
-            if ($process_kind === 'amount_change') {
-                $result_msg = amount_change($dbh, $id, $amount);
-            }
-
-            //商品削除
-            if ($process_kind === 'delete') {
-                $result_msg = delete($dbh, $id);
-            }
-        }
-    } else {
-        header('Location: login.php');
-        exit;
-    }
-
-    //商品一覧取得
-    $data = get_user_carts($dbh, $user_id);
-} catch (Exception $e) {
-    $err_msg[] = $e->getMessage();
+if(is_logined() === false){
+  redirect_to(LOGIN_URL);
 }
+
+$user = get_login_user($dbh);
+
+
+//受信値を変数に変換
+$id = get_post_data('id');
+$amount = get_post_data('amount');
+
+
+$cart = get_user_carts($dbh, $user['user_id']);
+
+$token = get_csrf_token();
 
 //viewファイル読み込み
 include_once VIEW_PATH . 'cart_view.php';
