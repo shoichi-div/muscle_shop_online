@@ -1,3 +1,7 @@
+<?php
+// クリックジャッキング対策
+header('X-FRAME-OPTIONS: DENY');
+?>
 <!DOCTYPE html>
 <html lang="ja">
 
@@ -13,7 +17,6 @@
             background-attachment: fixed;
         }
     </style>
-
 </head>
 
 <body>
@@ -71,4 +74,5 @@
     </main>
     <?php include_once VIEW_PATH . 'templates/footer.php'; ?>
 </body>
+
 </html>

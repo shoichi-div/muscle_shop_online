@@ -1,3 +1,7 @@
+<?php
+// クリックジャッキング対策
+header('X-FRAME-OPTIONS: DENY');
+?>
 <!DOCTYPE html>
 <html lang="ja">
 
@@ -20,9 +24,9 @@
     <main class="mx-5">
         <?php include_once VIEW_PATH . 'templates/messages.php'; ?>
 
+        <!-- 新規商品登録 -->
         <div class="bg-light rounded py-1 my-3">
-            <h2 class="m-3">新規商品追加</h2>
-
+            <h2 class="m-3">新規商品登録</h2>
             <form method='post' enctype="multipart/form-data" action="admin_insert_item.php" class="form-group pl-5">
                 <label for="name ">名前：</label><input type="text" name="name" class="form-control w-75 " id="name">
                 <label for="price ">価格：</label><input type="text" name="price" class="form-control w-75 " id="price">

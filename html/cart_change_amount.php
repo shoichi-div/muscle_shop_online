@@ -5,6 +5,7 @@ require_once MODEL_PATH . 'user_model.php';
 require_once MODEL_PATH . 'index_model.php';
 require_once MODEL_PATH . 'cart_model.php';
 
+$dbh = get_db_connect();
 session_start();
 
 if (is_logined() === false) {
@@ -12,7 +13,6 @@ if (is_logined() === false) {
 }
 
 $token = get_post_data('token');
-
 if (is_valid_csrf_token($token) === FALSE) {
     set_error('不正なアクセスです');
     redirect_to(LOGOUT_URL);
@@ -20,7 +20,6 @@ if (is_valid_csrf_token($token) === FALSE) {
     $token = get_csrf_token();
 }
 
-$dbh = get_db_connect();
 $user = get_login_user($dbh);
 
 $cart_id = get_post_data('id');

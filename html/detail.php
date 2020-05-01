@@ -7,13 +7,13 @@ require_once MODEL_PATH . 'cart_model.php';
 require_once MODEL_PATH . 'history_model.php';
 require_once MODEL_PATH . 'detail_model.php';
 
+$dbh = get_db_connect();
 session_start();
 
 if (is_logined() === false) {
     redirect_to(LOGIN_URL);
 }
 
-$dbh = get_db_connect();
 $user = get_login_user($dbh);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

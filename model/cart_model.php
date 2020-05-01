@@ -8,7 +8,6 @@ function delete_cart($dbh, $cart_id)
     WHERE
       id = ?
   ";
-
   try {
     return execute_query($dbh, $sql, array($cart_id));
   } catch (PDOException $e) {
@@ -20,12 +19,14 @@ function delete_cart($dbh, $cart_id)
 function get_user_carts($dbh, $user_id)
 {
     $sql =
-    "SELECT
+        "SELECT
         ec_item_master.item_id,
         ec_item_master.name,
         ec_item_master.price,
         ec_item_master.status,
         ec_item_master.img,
+        ec_item_master.part,
+        ec_item_master.menu,
         ec_stock_master.stock,
         ec_cart.id,
         ec_cart.user_id,
@@ -143,6 +144,27 @@ function purchase_carts($dbh, $carts)
             set_error($cart['name'] . 'の購入に失敗しました。');
         }
     }
+    return true;
+}
+
+function validate_cart_purchase($carts)
+{
+    if (count($carts) === 0) {
+        set_error('カートに商品が入っていません。');
+    }
+    foreach ($carts as $cart) {
+        if (is_open($cart) === false) {
+            set_error($cart['name'] . 'は現在購入できません。');
+        }
+        if ($cart['stock'] - $cart['amount'] < 0) {
+            set_error($cart['name'] . 'は在庫が足りません。購入可能数:' . $cart['stock']);
+        }
+    }
+    if (has_error() === true) {
+        return false;
+    }
+    return true;
+
 }
 
 function delete_user_carts($dbh, $user_id)
@@ -171,22 +193,3 @@ function sum_carts($carts)
     return $total_price;
 }
 
-function validate_cart_purchase($carts)
-{
-    if (count($carts) === 0) {
-        set_error('カートに商品が入っていません。');
-        return false;
-    }
-    foreach ($carts as $cart) {
-        if (is_open($cart) === false) {
-            set_error($cart['name'] . 'は現在購入できません。');
-        }
-        if ($cart['stock'] - $cart['amount'] < 0) {
-            set_error($cart['name'] . 'は在庫が足りません。購入可能数:' . $cart['stock']);
-        }
-    }
-    if (has_error() === true) {
-        return false;
-    }
-    return true;
-}

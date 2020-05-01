@@ -6,6 +6,7 @@ body{
 
 footer{
     width: 100%;
+    border-top: solid 2px #ee7800;
     position: absolute;
     bottom: 0;
 }

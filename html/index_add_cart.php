@@ -5,9 +5,7 @@ require_once MODEL_PATH . 'user_model.php';
 require_once MODEL_PATH . 'index_model.php';
 require_once MODEL_PATH . 'cart_model.php';
 
-$err = array();
-$err[] = 'aa';
-
+$dbh = get_db_connect();
 session_start();
 
 if (is_logined() === false) {
@@ -22,7 +20,6 @@ if (is_valid_csrf_token($token) === false) {
     $token = get_csrf_token();
 }
 
-$dbh = get_db_connect();
 $user = get_login_user($dbh);
 $item_id = get_post_data('item_id');
 $amount = get_post_data('amount');
