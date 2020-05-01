@@ -43,8 +43,6 @@ function get_messages()
   return $messages;
 }
 
-
-//ログアウト
 function logout()
 {
   session_start();
@@ -211,21 +209,6 @@ function is_valid_format($string, $format)
   return preg_match($format, $string) === 1;
 }
 
-
-function is_valid_upload_image($image)
-{
-  if (is_uploaded_file($image['tmp_name']) === false) {
-    set_error('ファイル形式が不正です。');
-    return false;
-  }
-  $mimetype = exif_imagetype($image['tmp_name']);
-  if (isset(PERMITTED_IMAGE_TYPES[$mimetype]) === false) {
-    set_error('ファイル形式は' . implode('、', PERMITTED_IMAGE_TYPES) . 'のみ利用可能です。');
-    return false;
-  }
-  return true;
-}
-
 // 再帰関数でセパレート
 function separate_number($num)
 {
@@ -234,7 +217,6 @@ function separate_number($num)
 
   $length = mb_strlen($num);
 
-  // 再帰的に呼び出すよ
   if ($length > 3) {
     // 前半を引数に再帰呼び出し + 後半3桁
     return separate_number(substr($num, 0, $length - 3)) . ',' . substr($num, $length - 3);

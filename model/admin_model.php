@@ -2,7 +2,6 @@
 //全商品情報の取得
 function get_all_items($dbh)
 {
-    // SQL生成
     $sql =
         'SELECT
     *
@@ -12,44 +11,89 @@ function get_all_items($dbh)
         ec_stock_master
     ON
         ec_item_master.item_id = ec_stock_master.stock_id;';
-    // クエリ実行
     return fetch_all_query($dbh, $sql);
 }
 
 //新規商品追加
 function insert_item($dbh, $name, $price, $stock, $status, $category, $part, $menu, $img_dir)
 {
-    global $err_msg;
-    $new_img_filename = '';
+    //入力値が正しいか確認
+    if (is_valid_value($name, $price, $stock, $status, $category, $part, $menu) === false) {
+        return false;
+    }
+
+    //画像ファイルが正しいか確認
+    $new_img_filename = is_valid_imgfile($img_dir);
+    if ($new_img_filename === '') {
+        return false;
+    }
+
+    $dbh->beginTransaction();
+    try {
+        //商品情報の登録
+        if (insert_ec_item_master($dbh, $name, $price, $new_img_filename, $status, $category, $part, $menu) === false) {
+            set_error('商品情報の登録に失敗しました');
+            return false;
+        }
+
+        $id = $dbh->lastInsertId();
+        //在庫数の登録
+        if (insert_ec_stock_master($dbh, $id, $stock) === false) {
+            set_error('在庫情報の登録に失敗しました。');
+            return false;
+        }
+
+        set_message('商品を追加しました');
+
+        $dbh->commit();
+
+        return true;
+    } catch (PDOException $e) {
+        $dbh->rollBack();
+        set_error($e);
+
+        return false;
+    }
+}
+
+function is_valid_value($name, $price, $stock, $status, $category, $part, $menu)
+{
     $pattern = '/^([+]?[0-9]*)$/';
-    //現在時刻を取得
-    if (empty($name) === TRUE) {
+    if (empty($name) === true) {
         set_error('名前を入力してください');
     }
-    if (empty($price) === TRUE && $price !== '0') {
+    if (empty($price) === true && $price !== '0') {
         set_error('価格を入力してください');
     } else if (preg_match($pattern, $price) === 0) {
         set_error('価格には0以上の整数を入力してください');
     }
-    if (empty($stock) === TRUE && $stock !== '0') {
+    if (empty($stock) === true && $stock !== '0') {
         set_error('個数を入力してください');
     } else if (preg_match($pattern, $stock) === 0) {
         set_error('個数には0以上の整数を入力してください');
     }
-    if (empty($category) === TRUE) {
+    if (empty($category) === true) {
         set_error('カテゴリーを入力してください');
     }
-    if (empty($part) === TRUE) {
+    if (empty($part) === true) {
         set_error('部位を入力してください');
     }
-    if (empty($menu) === TRUE) {
+    if (empty($menu) === true) {
         set_error('メニューを入力してください');
     }
     if ($status !== '1' && $status !== '0') {
         set_error('公開ステータス(status)の値は0か1を入力してください');
     }
+    if (has_error() === true) {
+        return false;
+    }
+    return true;
+}
 
-    if (is_uploaded_file($_FILES['img']['tmp_name']) === TRUE) {
+function is_valid_imgfile($img_dir)
+{
+    $new_img_filename = '';
+    if (is_uploaded_file($_FILES['img']['tmp_name']) === true) {
         // 画像の拡張子を取得
         $extension = pathinfo($_FILES['img']['name'], PATHINFO_EXTENSION);
         // 指定の拡張子であるかどうかチェック
@@ -59,7 +103,7 @@ function insert_item($dbh, $name, $price, $stock, $status, $category, $part, $me
             // 同名ファイルが存在するかどうかチェック
             if (is_file($img_dir . $new_img_filename) !== TRUE) {
                 // アップロードされたファイルを指定ディレクトリに移動して保存
-                if (move_uploaded_file($_FILES['img']['tmp_name'], $img_dir . $new_img_filename) !== TRUE) {
+                if (move_uploaded_file($_FILES['img']['tmp_name'], $img_dir . $new_img_filename) !== true) {
                     set_error('ファイルアップロードに失敗しました');
                 }
             } else {
@@ -71,44 +115,34 @@ function insert_item($dbh, $name, $price, $stock, $status, $category, $part, $me
     } else {
         set_error('ファイルを選択してください');
     }
+    if (has_error() === true) {
+        $new_img_filename = '';
+    }
+    return $new_img_filename;
+}
 
-    if (has_error() === false) {
-
-        $dbh->beginTransaction();
-        try {
-            //商品情報の登録
-            $sql =
-                'INSERT INTO
+//itemテーブルへ商品の追加
+function insert_ec_item_master($dbh, $name, $price, $new_img_filename, $status, $category, $part, $menu)
+{
+    $sql =
+        'INSERT INTO
                 ec_item_master (name, price, img, status, category, part, menu, create_datetime, update_datetime)
             VALUES
                 (?, ?, ?, ?, ?, ?, ?, now(), now());';
-            // SQL文を実行する準備
-            execute_query($dbh, $sql, array($name, $price, $new_img_filename, $status, $category, $part, $menu));
-
-            $id = $dbh->lastInsertId();
-
-            //在庫数の登録
-            $sql =
-                'INSERT INTO
-                ec_stock_master (stock_id, stock, create_datetime, update_datetime)
-            VALUES
-                (?, ?, now(), now());';
-            execute_query($dbh, $sql, array($id, $stock));
-
-            set_message('商品を追加しました');
-
-            $dbh->commit();
-            return true;
-        } catch (PDOException $e) {
-            //ロールバック
-            $dbh->rollBack();
-            set_error($e);
-            return false;
-        }
-    }
-    return false;
+    return execute_query($dbh, $sql, array($name, $price, $new_img_filename, $status, $category, $part, $menu));
 }
 
+function insert_ec_stock_master($dbh, $id, $stock)
+{
+    $sql =
+        'INSERT INTO
+            ec_stock_master (stock_id, stock, create_datetime, update_datetime)
+        VALUES
+            (?, ?, now(), now());';
+    return execute_query($dbh, $sql, array($id, $stock));
+}
+
+//在庫数の更新
 function update_item_stock($dbh, $stock_id, $stock)
 {
     $now_date = date('Y-m-d H:i:s');
@@ -128,6 +162,7 @@ function update_item_stock($dbh, $stock_id, $stock)
     }
     return false;
 }
+
 
 
 //公開ステータス変更

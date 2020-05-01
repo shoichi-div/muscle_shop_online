@@ -1,13 +1,12 @@
 <?php
 
 //データベースの接続情報
-define('DB_HOST', 'mysql');
+define('DB_HOST', 'localhost');
 define('DB_NAME', 'sample');
 define('DB_USER', 'testuser');
 define('DB_PASS', 'password');
 define('DB_CHARSET', 'utf8');
 define('DSN', 'mysql:dbname=' . DB_NAME . ';host=localhost;charset=utf8');
-
 
 define('HTML_CHARACTER_SET', 'UTF-8');
 
@@ -25,7 +24,6 @@ define('USER_URL', './user.php');
 
 define('REGEXP_ALPHANUMERIC', '/\A[0-9a-zA-Z]+\z/');
 define('REGEXP_POSITIVE_INTEGER', '/\A([1-9][0-9]*|0)\z/');
-
 
 define('USER_NAME_LENGTH_MIN', 6);
 define('USER_NAME_LENGTH_MAX', 100);
