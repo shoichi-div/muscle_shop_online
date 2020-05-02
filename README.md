@@ -21,4 +21,4 @@ You can only go to the administration screen when you log in by typing 'admin' i
 # Author
  
 Shoichi Kato
-twitterid: @sho1_code
+twitter: @sho1_code
