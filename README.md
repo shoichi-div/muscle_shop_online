@@ -38,4 +38,4 @@ http://118.27.9.37/MUSCLE_SHOP_ONLINE/www/html
 
 # 制作者
 
-[@sho1_code](htpps://twitter.com/sho1_code)
+[@sho1_code](http://twitter.com/sho1_code)
