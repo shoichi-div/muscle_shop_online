@@ -6,12 +6,12 @@
 http://118.27.9.37/MUSCLE_SHOP_ONLINE/www/html
 
 # 使用技術
-## HTML&CSS
-## php 7.3.11
-## MySQL
-## JavaScript
-## docker
-## bootstrap
+- HTML&CSS
+- php 7.3.11
+- MySQL
+- JavaScript
+- docker
+- bootstrap
  
 # 機能一覧
 ## ユーザー機能
