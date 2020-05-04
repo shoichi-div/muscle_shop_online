@@ -47,6 +47,12 @@ header('X-FRAME-OPTIONS: DENY');
             <input type="submit" name="register" value="新規会員登録" class="btn btn-warning mt-2 form-control">
             <input type="hidden" name="token" value="<?php print htmlspecialchars($token); ?>">
         </form>
+        <form method="post" action="login_process.php" class="mx-auto">
+            <input type="submit" name="test_login" value="簡単ログイン" class="btn btn-warning mt-2 form-control">
+            <input type="hidden" name="user_name" value="testuser">
+            <input type="hidden" name="user_kind" value="guest">
+            <input type="hidden" name="token" value="<?php print htmlspecialchars($token); ?>">
+        </form>
     </main>
     <?php include_once VIEW_PATH . 'templates/footer.php'; ?>
 </body>

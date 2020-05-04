@@ -65,6 +65,16 @@ function get_user_by_name($dbh, $name)
   }
 }
 
+function login_as_guest($dbh, $name)
+{
+  $user = get_user_by_name($dbh, $name);
+  if ($user === false) {
+    return false;
+  }
+  set_session('user_id', $user['user_id']);
+  return $user;
+}
+
 function login_as($dbh, $name, $password)
 {
   $user = get_user_by_name($dbh, $name);
