@@ -143,6 +143,26 @@ function insert_ec_stock_master($dbh, $id, $stock)
 }
 
 //在庫数の更新
+function update_item_price($dbh, $item_id, $price)
+{
+    $now_date = date('Y-m-d H:i:s');
+    $sql = "
+    UPDATE
+      ec_item_master
+    SET
+      price = ?,
+      update_datetime = ?
+    WHERE
+      item_id = ?
+  ";
+    try {
+        return execute_query($dbh, $sql, array($price, $now_date, $item_id));
+    } catch (PDOException $e) {
+        set_error('更新に失敗しました。');
+    }
+    return false;
+}
+//在庫数の更新
 function update_item_stock($dbh, $stock_id, $stock)
 {
     $now_date = date('Y-m-d H:i:s');

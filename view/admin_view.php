@@ -71,14 +71,22 @@ header('X-FRAME-OPTIONS: DENY');
                         <!--商品名-->
                         <td><?php print htmlspecialchars($dt['name']); ?></td>
                         <!--価格-->
-                        <td><?php print htmlspecialchars($dt['price']); ?>円</td>
+                        <td>
+                            <form method="post" action="admin_price_change.php" class="form-group">
+                                <input class="form-control" type="text" name="price" value="<?php print htmlspecialchars($dt['price']) ?>">
+                                <input type="hidden" name="id" value="<?php print htmlspecialchars($dt['stock_id']) ?>">
+                                <input type="hidden" name="item_id" value="<?php print htmlspecialchars($dt['item_id']); ?>">
+                                <input type="hidden" name="token" value="<?php print htmlspecialchars($token); ?>">
+                                <div><input class="btn btn-warning mt-2" type="submit" value="変更"></div>
+                            </form>
+                        </td>
                         <!--在庫数-->
                         <td>
                             <form method="post" action="admin_stock_change.php" class="form-group">
                                 <input class="form-control" type="text" name="stock" value="<?php print htmlspecialchars($dt['stock']) ?>">
                                 <input type="hidden" name="id" value="<?php print htmlspecialchars($dt['stock_id']) ?>">
-                                <input type="hidden" name="token" value="<?php print htmlspecialchars($token); ?>">
                                 <input type="hidden" name="stock_id" value="<?php print htmlspecialchars($dt['stock_id']); ?>">
+                                <input type="hidden" name="token" value="<?php print htmlspecialchars($token); ?>">
                                 <div><input class="btn btn-warning mt-2" type="submit" value="変更"></div>
                             </form>
                         </td>

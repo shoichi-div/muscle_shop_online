@@ -21,7 +21,13 @@ if (is_valid_csrf_token($token) === false) {
 $name = get_post_data('user_name');
 $password = get_post_data('password');
 
-$user = login_as($dbh, $name, $password);
+if ($name === 'testuser' && get_post_data('user_kind') === 'guest') {
+    $user = login_as_guest($dbh, $name);
+} else {
+    $user = login_as($dbh, $name, $password);
+}
+
+// var_dump($user);
 if ($user === false) {
     set_error('ログインに失敗しました。');
     redirect_to(LOGIN_URL);
