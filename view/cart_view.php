@@ -34,9 +34,9 @@ header('X-FRAME-OPTIONS: DENY');
                     <div class="row">
                         <?php foreach ($cart as $dt) { ?>
                             <?php $subtotal =  $dt['price'] * $dt['amount']; ?>
-                            <div class="col-lg-5 bg-light rounded d-flex p-2 mx-auto my-2">
-                                <img src="<?php print htmlspecialchars($img_dir . $dt['img']); ?>">
-                                <ul>
+                            <div class="col-lg-5 bg-light rounded p-2 mx-auto my-2 row">
+                                <img class="col-md-5" src="<?php print htmlspecialchars($img_dir . $dt['img']); ?>">
+                                <ul class="col-md-5">
                                     <li>商品名：<?php print htmlspecialchars($dt['name']); ?></li>
                                     <li>鍛えられる部位：<?php print htmlspecialchars($dt['part']); ?></li>
                                     <li>筋トレメニュー：<?php print htmlspecialchars($dt['menu']); ?></li>

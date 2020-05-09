@@ -16,12 +16,7 @@ header('X-FRAME-OPTIONS: DENY');
             background-size: cover;
             background-attachment: fixed;
         }
-
-        form {
-            width: 20em;
-        }
     </style>
-
 </head>
 
 <body>
@@ -29,7 +24,7 @@ header('X-FRAME-OPTIONS: DENY');
     <main class="w-50 bg-light rounded p-3 my-3 mx-auto">
         <?php include_once VIEW_PATH . 'templates/messages.php'; ?>
 
-        <h1>ログイン</h1>
+        <h2>ログイン</h2>
 
         <form method="post" action="login_process.php" class="login_form mx-auto">
             <div class="form-group">
