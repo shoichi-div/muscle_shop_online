@@ -13,7 +13,6 @@ footer{
 
 header h1 {
     color: #000;
-    font-size: 20px;
     font-weight: normal;
     margin: 0;
     }
@@ -33,4 +32,17 @@ li {
 
 a:hover {
     text-decoration: underline #000 ;
+}
+
+/* 幅1024px以下*/
+@media (max-width: 1024px) {
+    header h1 { font-size: 16px; }
+    main h2 { font-size: 14px; }
+    input, label{ font-size:12px; }
+    .logo { width:90%; }
+}
+
+/* 幅1025px以上*/
+@media (min-width: 1025px){
+    h1 { font-size: 20px; }
 }

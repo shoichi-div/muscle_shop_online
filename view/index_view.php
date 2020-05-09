@@ -44,59 +44,67 @@ header('X-FRAME-OPTIONS: DENY');
             </form>
             <a href="mi.php"><sup>※</sup>MIとは</a>
         </div>
-        <div class="d-flex">
-            <section class="bg-light d-inline-block rounded my-3 p-3 mr-5">
-                <h3>商品検索</h3>
-                <form method="get">
-                    <label for="category">カテゴリ:</label>
-                    <select class="btn btn-warning" name="category" id="category">
-                        <option value="ALL">ALL</option>
-                        <option value="ウエイト" <?php if ($category === '%ウエイト%') { ?> selected <?php } ?>>ウエイト</option>
-                        <option value="自重補助" <?php if ($category === '%自重補助%') { ?> selected <?php } ?>>自重補助</option>
-                        <option value="その他" <?php if ($category === '%その他%') { ?> selected <?php } ?>>その他</option>
-                    </select>
-                    <label for="part">部位:</label>
-                    <select class="btn btn-warning" name="part" id="part">
-                        <option value="ALL">ALL</option>
-                        <option value="腕" <?php if ($part === '%腕%') { ?> selected <?php } ?>>腕</option>
-                        <option value="肩" <?php if ($part === '%肩%') { ?> selected <?php } ?>>肩</option>
-                        <option value="胸" <?php if ($part === '%胸%') { ?> selected <?php } ?>>胸</option>
-                        <option value="腹" <?php if ($part === '%腹%') { ?> selected <?php } ?>>腹</option>
-                        <option value="背中" <?php if ($part === '%背中%') { ?> selected <?php } ?>>背中</option>
-                        <option value="下半身" <?php if ($part === '%下半身%') { ?> selected <?php } ?>>下半身</option>
-                    </select>
-                    <label for="keyword">キーワード：</label>
-                    <input type="text" name="keyword" id="keyword" value="<?php print htmlspecialchars($word); ?>">
-                    <input type="hidden" name="get_kind" value="<?php print 'serch' ?>">
-                    <input class="btn btn-warning" type="submit" value="検索">
-                </form>
-            </section>
-            <section class="bg-light d-inline-block rounded my-3 p-3">
-                <h3 class="text-center">並び順</h3>
-                <form method="get" name="sort_form">
-                    <select class="btn btn-warning" name="sort">
-                        <option name="option" value="new" <?php if ($sort === 'new' || $sort === '') { ?>selected<?php } ?>>新しい順</option>
-                        <option name="option" value="low" <?php if ($sort === 'low') { ?>selected<?php } ?>>価格の安い順</option>
-                        <option name="option" value="high" <?php if ($sort === 'high') { ?>selected<?php } ?>>価格の高い順</option>
-                    </select>
-                    <!-- 選んだ方式で並べ替えを実施 -->
-                    <script>
-                        document.sort_form.addEventListener('change', function() {
-                            document.sort_form.submit();
-                        }, false);
-                    </script>
-                    <input type="hidden" name="get_kind" value="<?php print 'sort' ?>">
-                </form>
-            </section>
+        <div class="container-fluid">
+            <div class="d-flex row">
+                <section class="bg-light col-md-5 d-inline-block rounded my-3 p-3 mr-5">
+                    <h3>商品検索</h3>
+                    <form method="get" class="serch_form">
+                        <div>
+                            <label for="category">カテゴリ:</label>
+                            <select class="btn btn-warning" name="category" id="category">
+                                <option value="ALL">ALL</option>
+                                <option value="ウエイト" <?php if ($category === '%ウエイト%') { ?> selected <?php } ?>>ウエイト</option>
+                                <option value="自重補助" <?php if ($category === '%自重補助%') { ?> selected <?php } ?>>自重補助</option>
+                                <option value="その他" <?php if ($category === '%その他%') { ?> selected <?php } ?>>その他</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="part">部位:</label>
+                            <select class="btn btn-warning" name="part" id="part">
+                                <option value="ALL">ALL</option>
+                                <option value="腕" <?php if ($part === '%腕%') { ?> selected <?php } ?>>腕</option>
+                                <option value="肩" <?php if ($part === '%肩%') { ?> selected <?php } ?>>肩</option>
+                                <option value="胸" <?php if ($part === '%胸%') { ?> selected <?php } ?>>胸</option>
+                                <option value="腹" <?php if ($part === '%腹%') { ?> selected <?php } ?>>腹</option>
+                                <option value="背中" <?php if ($part === '%背中%') { ?> selected <?php } ?>>背中</option>
+                                <option value="下半身" <?php if ($part === '%下半身%') { ?> selected <?php } ?>>下半身</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="keyword">キーワード：</label>
+                            <input type="text" name="keyword" id="keyword" value="<?php print htmlspecialchars($word); ?>">
+                            <input type="hidden" name="get_kind" value="<?php print 'serch' ?>">
+                            <input class="btn btn-warning" type="submit" value="検索">
+                        </div>
+                    </form>
+                </section>
+                <section class="bg-light col-md-5 d-inline-block rounded my-3 p-3">
+                    <h3 class="text-center">並び順</h3>
+                    <form method="get" name="sort_form" class="text-center">
+                        <select class="btn btn-warning" name="sort">
+                            <option name="option" value="new" <?php if ($sort === 'new' || $sort === '') { ?>selected<?php } ?>>新しい順</option>
+                            <option name="option" value="low" <?php if ($sort === 'low') { ?>selected<?php } ?>>価格の安い順</option>
+                            <option name="option" value="high" <?php if ($sort === 'high') { ?>selected<?php } ?>>価格の高い順</option>
+                        </select>
+                        <!-- 選んだ方式で並べ替えを実施 -->
+                        <script>
+                            document.sort_form.addEventListener('change', function() {
+                                document.sort_form.submit();
+                            }, false);
+                        </script>
+                        <input type="hidden" name="get_kind" value="<?php print 'sort' ?>">
+                    </form>
+                </section>
+            </div>
         </div>
 
 
         <section class="container-fluid item_wrapper">
             <div class="row">
                 <?php foreach ($item_data as $dt) { ?>
-                    <div class="col-lg-5 bg-light rounded d-flex p-2 mx-auto my-2">
-                        <img src="<?php print htmlspecialchars($img_dir . $dt['img']); ?>">
-                        <ul>
+                    <div class="col-lg-5 bg-light rounded d-flex p-2 mx-auto my-2 row">
+                        <img class="col-md-5" src="<?php print htmlspecialchars($img_dir . $dt['img']); ?>">
+                        <ul class="col-md-5">
                             <li>商品名：<?php print htmlspecialchars($dt['name']); ?></li>
                             <li>鍛えられる部位：<?php print htmlspecialchars($dt['part']); ?></li>
                             <li>筋トレメニュー：<?php print htmlspecialchars($dt['menu']); ?></li>

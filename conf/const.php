@@ -1,7 +1,7 @@
 <?php
 
 //データベースの接続情報
-define('DB_HOST', 'localhost');
+define('DB_HOST', 'mysql');
 define('DB_NAME', 'sample');
 define('DB_USER', 'testuser');
 define('DB_PASS', 'password');
